@@ -4,6 +4,7 @@ package Pengingat;
 import javax.swing.*;
 import java.awt.*;
 import java.awt.event.ActionEvent;
+import java.io.File;
 import java.util.List;
 
 public class ReminderGUI extends JFrame {
@@ -144,7 +145,6 @@ public class ReminderGUI extends JFrame {
             title.setFont(new Font("Arial", Font.BOLD, 14));
             title.setAlignmentX(Component.LEFT_ALIGNMENT);
 
-
             JLabel date = new JLabel(r.getTanggal());
             date.setForeground(new Color(80, 80, 120));
             date.setFont(new Font("Arial", Font.PLAIN, 11));
@@ -161,8 +161,6 @@ public class ReminderGUI extends JFrame {
             desc.setBorder(null);
             desc.setAlignmentX(Component.LEFT_ALIGNMENT);
 
-
-
             JPanel textPanel = new JPanel();
             textPanel.setLayout(new BoxLayout(textPanel, BoxLayout.Y_AXIS));
             textPanel.setBackground(panel.getBackground());
@@ -174,34 +172,56 @@ public class ReminderGUI extends JFrame {
             time.setForeground(new Color(60, 120, 160));
             time.setFont(new Font("Arial", Font.BOLD, 13));
 
+            // Load ikon edit
+            ImageIcon editIcon = null;
+            try {
+                Image editImg = new ImageIcon("assets/edit.png").getImage().getScaledInstance(16, 16, Image.SCALE_SMOOTH);
+                editIcon = new ImageIcon(editImg);
+            } catch (Exception ex) {
+                System.err.println("Gagal memuat ikon edit.");
+            }
+
+            // Load ikon delete
+            ImageIcon deleteIcon = null;
+            try {
+                Image deleteImg = new ImageIcon("assets/delete.png").getImage().getScaledInstance(16, 16, Image.SCALE_SMOOTH);
+                deleteIcon = new ImageIcon(deleteImg);
+            } catch (Exception ex) {
+                System.err.println("Gagal memuat ikon delete.");
+            }
+
+            File fileEdit = new File("assets/edit.png");
+System.out.println("Edit.png path: " + fileEdit.getAbsolutePath());
+System.out.println("Edit.png exists? " + fileEdit.exists());
+
+            // Tombol Edit
+            JButton editButton = (editIcon != null) ? new JButton(editIcon) : new JButton("Edit");
+            editButton.setFocusPainted(false);
+            editButton.setBackground(new Color(255, 200, 100));
+            editButton.setPreferredSize(new Dimension(36, 30));
+            editButton.setToolTipText("Edit kegiatan");
+            editButton.addActionListener(e -> editReminder(r));
+
+            File fileDelete = new File("assets/delete.png");
+System.out.println("Delete.png path: " + fileDelete.getAbsolutePath());
+System.out.println("Delete.png exists? " + fileDelete.exists());
+
             // Tombol Hapus
-            JButton hapusButton = new JButton("🗑");
+            JButton hapusButton = (deleteIcon != null) ? new JButton(deleteIcon) : new JButton("Hapus");
             hapusButton.setFocusPainted(false);
             hapusButton.setBackground(new Color(2, 100, 100));
-            hapusButton.setForeground(Color.WHITE);
-            hapusButton.setFont(new Font("Arial", Font.BOLD, 10));
-            hapusButton.setPreferredSize(new Dimension(45, 25));
+            hapusButton.setPreferredSize(new Dimension(36, 30));
+            hapusButton.setToolTipText("Hapus kegiatan");
             hapusButton.addActionListener(e -> {
                 reminderManager.hapusReminder(r);
                 tampilkanReminders();
             });
 
-            // Tombol Edit
-            JButton editButton = new JButton("✎");
-            editButton.setFocusPainted(false);
-            editButton.setBackground(new Color(255, 200, 100));
-            editButton.setForeground(Color.BLACK);
-            editButton.setFont(new Font("Arial", Font.BOLD, 10));
-            editButton.setPreferredSize(new Dimension(45, 25));
-            editButton.addActionListener(e -> editReminder(r));
-
-            // Panel untuk tombol-tombol di bawah kanan
             JPanel buttonPanel = new JPanel(new FlowLayout(FlowLayout.RIGHT, 5, 0));
             buttonPanel.setBackground(panel.getBackground());
             buttonPanel.add(editButton);
             buttonPanel.add(hapusButton);
 
-            // Gabungkan time + buttonPanel ke panel kanan
             JPanel rightPanel = new JPanel(new BorderLayout());
             rightPanel.setBackground(panel.getBackground());
             rightPanel.add(time, BorderLayout.NORTH);
