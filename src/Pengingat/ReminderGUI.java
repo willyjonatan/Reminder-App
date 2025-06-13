@@ -79,6 +79,46 @@ public class ReminderGUI extends JFrame {
         }
     }
 
+    private void editReminder(Reminder reminder) {
+        JTextField titleField = new JTextField(reminder.getNama());
+        JTextField timeField = new JTextField(reminder.getWaktu());
+        JTextField dateField = new JTextField(reminder.getTanggal());
+        JTextField descField = new JTextField(reminder.getDeskripsi());
+
+        JPanel formPanel = new JPanel(new GridLayout(0, 1));
+        formPanel.setBackground(new Color(240, 240, 255));
+        formPanel.add(new JLabel("Judul:"));
+        formPanel.add(titleField);
+        formPanel.add(new JLabel("Jam (HH:MM):"));
+        formPanel.add(timeField);
+        formPanel.add(new JLabel("Tanggal (YYYY-MM-DD):"));
+        formPanel.add(dateField);
+        formPanel.add(new JLabel("Deskripsi:"));
+        formPanel.add(descField);
+
+        int result = JOptionPane.showConfirmDialog(this, formPanel, "Edit Kegiatan",
+                JOptionPane.OK_CANCEL_OPTION, JOptionPane.PLAIN_MESSAGE);
+
+        if (result == JOptionPane.OK_OPTION) {
+            String title = titleField.getText().trim();
+            String time = timeField.getText().trim();
+            String date = dateField.getText().trim();
+            String desc = descField.getText().trim();
+
+            if (!title.isEmpty() && !time.isEmpty() && !date.isEmpty()) {
+                reminder.setNama(title);
+                reminder.setWaktu(time);
+                reminder.setTanggal(date);
+                reminder.setDeskripsi(desc);
+                tampilkanReminders();
+            } else {
+                JOptionPane.showMessageDialog(this,
+                        "Judul, jam, dan tanggal tidak boleh kosong.",
+                        "Error", JOptionPane.ERROR_MESSAGE);
+            }
+        }
+    }
+
     private void tampilkanReminders() {
         mainPanel.removeAll();
 
@@ -98,16 +138,6 @@ public class ReminderGUI extends JFrame {
                     BorderFactory.createLineBorder(new Color(200, 200, 220)),
                     BorderFactory.createEmptyBorder(8, 12, 8, 12)
             ));
-
-            JButton hapusButton = new JButton("🗑");
-            hapusButton.setFocusPainted(false);
-            hapusButton.setBackground(new Color(2, 100, 100));
-            hapusButton.setForeground(Color.WHITE);
-            hapusButton.setFont(new Font("Arial", Font.BOLD, 6));
-            hapusButton.addActionListener(e -> {
-                reminderManager.hapusReminder(r);
-                tampilkanReminders();
-            });
 
             JLabel title = new JLabel(r.getNama());
             title.setForeground(new Color(40, 75, 99));
@@ -132,9 +162,41 @@ public class ReminderGUI extends JFrame {
             time.setForeground(new Color(60, 120, 160));
             time.setFont(new Font("Arial", Font.BOLD, 13));
 
-            panel.add(hapusButton, BorderLayout.WEST);
+            // Tombol Hapus
+            JButton hapusButton = new JButton("🗑");
+            hapusButton.setFocusPainted(false);
+            hapusButton.setBackground(new Color(2, 100, 100));
+            hapusButton.setForeground(Color.WHITE);
+            hapusButton.setFont(new Font("Arial", Font.BOLD, 10));
+            hapusButton.setPreferredSize(new Dimension(45, 25));
+            hapusButton.addActionListener(e -> {
+                reminderManager.hapusReminder(r);
+                tampilkanReminders();
+            });
+
+            // Tombol Edit
+            JButton editButton = new JButton("✎");
+            editButton.setFocusPainted(false);
+            editButton.setBackground(new Color(255, 200, 100));
+            editButton.setForeground(Color.BLACK);
+            editButton.setFont(new Font("Arial", Font.BOLD, 10));
+            editButton.setPreferredSize(new Dimension(45, 25));
+            editButton.addActionListener(e -> editReminder(r));
+
+            // Panel untuk tombol-tombol di bawah kanan
+            JPanel buttonPanel = new JPanel(new FlowLayout(FlowLayout.RIGHT, 5, 0));
+            buttonPanel.setBackground(panel.getBackground());
+            buttonPanel.add(editButton);
+            buttonPanel.add(hapusButton);
+
+            // Gabungkan time + buttonPanel ke panel kanan
+            JPanel rightPanel = new JPanel(new BorderLayout());
+            rightPanel.setBackground(panel.getBackground());
+            rightPanel.add(time, BorderLayout.NORTH);
+            rightPanel.add(buttonPanel, BorderLayout.SOUTH);
+
             panel.add(textPanel, BorderLayout.CENTER);
-            panel.add(time, BorderLayout.EAST);
+            panel.add(rightPanel, BorderLayout.EAST);
 
             mainPanel.add(panel);
             mainPanel.add(Box.createVerticalStrut(10));
