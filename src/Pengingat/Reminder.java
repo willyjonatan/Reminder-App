@@ -1,6 +1,6 @@
 package Pengingat;
 
-// Interface sebagai bagian dari prinsip Interface & Polymorphism
+
 interface Displayable {
     String display();
 }
