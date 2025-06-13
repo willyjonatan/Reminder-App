@@ -8,7 +8,7 @@ public class Main {
         Scanner input = new Scanner(System.in);
         ReminderManager reminderManager = new ReminderManager();
 
-        System.out.println("Ingin menambahkan reminder sebelum GUI terbuka? (ya/tidak):");
+        System.out.println("Ingin menambahkan reminder? (ya/tidak):");
         String jawab = input.nextLine().trim().toLowerCase();
 
         while (jawab.equals("ya")) {
@@ -18,15 +18,18 @@ public class Main {
             System.out.print("Masukkan waktu (HH:mm): ");
             String waktu = input.nextLine().trim();
 
+            System.out.print("Masukkan tanggal (YYYY-MM-DD): ");
+            String tanggal = input.nextLine().trim();
+
             System.out.print("Masukkan deskripsi kegiatan: ");
             String deskripsi = input.nextLine().trim();
 
-            if (nama.isEmpty() || waktu.isEmpty() || deskripsi.isEmpty()) {
+            if (nama.isEmpty() || waktu.isEmpty() || tanggal.isEmpty() || deskripsi.isEmpty()) {
                 System.out.println("⚠️  Semua field wajib diisi. Ulangi input.");
                 continue;
             }
 
-            Reminder reminder = new Reminder(nama, waktu, deskripsi);
+            Reminder reminder = new Reminder(nama, waktu, deskripsi, tanggal);
             reminderManager.tambahReminder(reminder);
 
             System.out.println("📌 Reminder berhasil ditambahkan.\n");

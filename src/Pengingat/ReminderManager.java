@@ -1,3 +1,5 @@
+// File: ReminderManager.java
+
 package Pengingat;
 
 import java.util.ArrayList;
@@ -13,8 +15,8 @@ public class ReminderManager {
         daftarReminder.add(reminder);
     }
 
-    public void hapusSemuaReminder() {
-        daftarReminder.clear();
+    public void hapusReminder(Reminder reminder) {
+        daftarReminder.remove(reminder);
     }
 
     public ArrayList<Reminder> getDaftarReminder() {
