@@ -142,14 +142,26 @@ public class ReminderGUI extends JFrame {
             JLabel title = new JLabel(r.getNama());
             title.setForeground(new Color(40, 75, 99));
             title.setFont(new Font("Arial", Font.BOLD, 14));
+            title.setAlignmentX(Component.LEFT_ALIGNMENT);
+
 
             JLabel date = new JLabel(r.getTanggal());
             date.setForeground(new Color(80, 80, 120));
             date.setFont(new Font("Arial", Font.PLAIN, 11));
+            date.setAlignmentX(Component.LEFT_ALIGNMENT);
 
-            JLabel desc = new JLabel(r.getDeskripsi());
+            JTextArea desc = new JTextArea(r.getDeskripsi());
+            desc.setWrapStyleWord(true);
+            desc.setLineWrap(true);
+            desc.setEditable(false);
+            desc.setFocusable(false);
+            desc.setOpaque(false);
             desc.setForeground(new Color(100, 100, 100));
             desc.setFont(new Font("Arial", Font.ITALIC, 11));
+            desc.setBorder(null);
+            desc.setAlignmentX(Component.LEFT_ALIGNMENT);
+
+
 
             JPanel textPanel = new JPanel();
             textPanel.setLayout(new BoxLayout(textPanel, BoxLayout.Y_AXIS));
