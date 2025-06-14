@@ -1,15 +1,11 @@
+// File: Reminder.java
 package Pengingat;
 
-interface Displayable {
-    String display();
-}
-
-// Kelas Reminder sebagai representasi pengingat biasa
 public class Reminder implements Displayable {
     private String nama;
     private String waktu;
     private String deskripsi;
-    private String tanggal = ""; // Tambahan: tanggal default kosong
+    private String tanggal = "";
 
     public Reminder(String nama, String waktu, String deskripsi) {
         this.nama = nama;
@@ -17,7 +13,6 @@ public class Reminder implements Displayable {
         this.deskripsi = deskripsi;
     }
 
-    // Overload constructor untuk tambahan GUI
     public Reminder(String nama, String waktu, String deskripsi, String tanggal) {
         this.nama = nama;
         this.waktu = waktu;
@@ -59,13 +54,6 @@ public class Reminder implements Displayable {
 
     @Override
     public String display() {
-        return toString();
-    }
-
-    @Override
-    public String toString() {
-        return "📅 " + (tanggal.isEmpty() ? "(Tanpa tanggal)" : tanggal) +
-                " | 🕒 " + waktu + " - " + nama +
-                "\n📝 " + deskripsi;
+        return "Judul: " + nama + "\nWaktu: " + waktu + "\nTanggal: " + tanggal + "\nDeskripsi: " + deskripsi;
     }
 }

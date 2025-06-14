@@ -10,6 +10,8 @@ public class ReminderFormDialog extends JDialog {
     private JTextField timeField;
     private JTextField dateField;
     private JTextField descField;
+    private JTextField extraField;
+    private JComboBox<String> typeComboBox;
     private JLabel charCounter;
     private Reminder reminder;
     private ReminderManager reminderManager;
@@ -19,7 +21,7 @@ public class ReminderFormDialog extends JDialog {
         this.reminder = reminder;
         this.reminderManager = reminderManager;
 
-        setSize(400, 300);
+        setSize(400, 400);
         setLocationRelativeTo(owner);
         getContentPane().setBackground(new Color(240, 240, 255));
         setLayout(new BorderLayout());
@@ -28,6 +30,17 @@ public class ReminderFormDialog extends JDialog {
         timeField = new JTextField(reminder != null ? reminder.getWaktu() : "");
         dateField = new JTextField(reminder != null ? reminder.getTanggal() : "");
         descField = new JTextField(reminder != null ? reminder.getDeskripsi() : "");
+        extraField = new JTextField();
+
+        typeComboBox = new JComboBox<>(new String[]{"Reminder Biasa", "Meeting Reminder", "Deadline Reminder"});
+
+        if (reminder instanceof MeetingReminder) {
+            typeComboBox.setSelectedIndex(1);
+            extraField.setText(((MeetingReminder) reminder).getPlatform());
+        } else if (reminder instanceof DeadlineReminder) {
+            typeComboBox.setSelectedIndex(2);
+            extraField.setText(((DeadlineReminder) reminder).getPrioritas());
+        }
 
         charCounter = new JLabel((descField.getText().length()) + "/120");
         charCounter.setForeground(Color.GRAY);
@@ -49,6 +62,10 @@ public class ReminderFormDialog extends JDialog {
         formPanel.setLayout(new BoxLayout(formPanel, BoxLayout.Y_AXIS));
         formPanel.setBackground(new Color(240, 240, 255));
 
+        formPanel.add(new JLabel("Jenis Kegiatan:"));
+        formPanel.add(typeComboBox);
+        formPanel.add(Box.createVerticalStrut(5));
+
         formPanel.add(new JLabel("Judul:"));
         formPanel.add(titleField);
         formPanel.add(Box.createVerticalStrut(5));
@@ -64,6 +81,10 @@ public class ReminderFormDialog extends JDialog {
         formPanel.add(new JLabel("Deskripsi:"));
         formPanel.add(descField);
         formPanel.add(charCounter);
+        formPanel.add(Box.createVerticalStrut(5));
+
+        formPanel.add(new JLabel("Platform / Prioritas:"));
+        formPanel.add(extraField);
 
         add(formPanel, BorderLayout.CENTER);
 
@@ -89,6 +110,7 @@ public class ReminderFormDialog extends JDialog {
         String time = timeField.getText().trim();
         String date = dateField.getText().trim();
         String desc = descField.getText().trim();
+        String extra = extraField.getText().trim();
 
         if (title.isEmpty() || time.isEmpty() || date.isEmpty()) {
             JOptionPane.showMessageDialog(this, "Judul, jam, dan tanggal tidak boleh kosong.", "Error", JOptionPane.ERROR_MESSAGE);
@@ -110,24 +132,37 @@ public class ReminderFormDialog extends JDialog {
             return false;
         }
 
-        // Periksa duplikat jadwal berdasarkan nama, tanggal, dan waktu
         for (Reminder existing : reminderManager.getDaftarReminder()) {
-    // Jika sedang edit, abaikan diri sendiri
-    if (reminder != null && existing == reminder) continue;
+            if (reminder != null && existing == reminder) continue;
+            if (existing.getTanggal().equals(date) && existing.getWaktu().equals(time)) {
+                JOptionPane.showMessageDialog(this, "Sudah ada kegiatan lain pada waktu yang sama.", "Jadwal Bentrok", JOptionPane.WARNING_MESSAGE);
+                return false;
+            }
+        }
 
-    if (existing.getTanggal().equals(date) && existing.getWaktu().equals(time)) {
-        JOptionPane.showMessageDialog(this, "Sudah ada kegiatan lain pada waktu yang sama.", "Jadwal Bentrok", JOptionPane.WARNING_MESSAGE);
-        return false;
-    }
-}
-
+        int selectedType = typeComboBox.getSelectedIndex();
         if (reminder == null) {
-            reminder = new Reminder(title, time, desc, date);
+            switch (selectedType) {
+                case 1:
+                    reminder = new MeetingReminder(title, time, desc, date, extra);
+                    break;
+                case 2:
+                    reminder = new DeadlineReminder(title, time, desc, date, extra);
+                    break;
+                default:
+                    reminder = new Reminder(title, time, desc, date);
+            }
         } else {
             reminder.setNama(title);
             reminder.setWaktu(time);
             reminder.setTanggal(date);
             reminder.setDeskripsi(desc);
+
+            if (reminder instanceof MeetingReminder) {
+                ((MeetingReminder) reminder).setPlatform(extra);
+            } else if (reminder instanceof DeadlineReminder) {
+                ((DeadlineReminder) reminder).setPrioritas(extra);
+            }
         }
 
         return true;

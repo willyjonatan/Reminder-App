@@ -77,7 +77,7 @@ public class ReminderGUI extends JFrame {
         List<Reminder> reminders = reminderManager.getDaftarReminder();
         for (Reminder r : reminders) {
             JPanel panel = new JPanel(new BorderLayout());
-            panel.setMaximumSize(new Dimension(Integer.MAX_VALUE, 90));
+            panel.setMaximumSize(new Dimension(Integer.MAX_VALUE, 110));
             panel.setBackground(new Color(224, 240, 255));
             panel.setBorder(BorderFactory.createCompoundBorder(
                     BorderFactory.createLineBorder(new Color(200, 200, 220)),
@@ -94,7 +94,7 @@ public class ReminderGUI extends JFrame {
             date.setForeground(new Color(0, 120, 215));
             date.setBorder(BorderFactory.createEmptyBorder(4, 0, 0, 0));
 
-            JTextArea desc = new JTextArea("\u2022 " + r.getDeskripsi());
+            JTextArea desc = new JTextArea("• " + r.getDeskripsi());
             desc.setWrapStyleWord(true);
             desc.setLineWrap(true);
             desc.setEditable(false);
@@ -104,12 +104,25 @@ public class ReminderGUI extends JFrame {
             desc.setFont(new Font("Arial", Font.ITALIC, 11));
             desc.setAlignmentX(Component.LEFT_ALIGNMENT);
 
+            String extraInfo = "";
+            if (r instanceof MeetingReminder) {
+                extraInfo = "Platform: " + ((MeetingReminder) r).getPlatform();
+            } else if (r instanceof DeadlineReminder) {
+                extraInfo = "Prioritas: " + ((DeadlineReminder) r).getPrioritas();
+            }
+
+            JLabel extraLabel = new JLabel(extraInfo);
+            extraLabel.setFont(new Font("Arial", Font.PLAIN, 11));
+            extraLabel.setForeground(new Color(80, 80, 120));
+            extraLabel.setBorder(BorderFactory.createEmptyBorder(2, 0, 0, 0));
+
             JPanel textPanel = new JPanel();
             textPanel.setLayout(new BoxLayout(textPanel, BoxLayout.Y_AXIS));
             textPanel.setBackground(panel.getBackground());
             textPanel.add(title);
             textPanel.add(date);
             textPanel.add(desc);
+            if (!extraInfo.isEmpty()) textPanel.add(extraLabel);
 
             ImageIcon editIcon = new ImageIcon(
                     new ImageIcon("assets/edit.png").getImage().getScaledInstance(16, 16, Image.SCALE_SMOOTH)
