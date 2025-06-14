@@ -12,10 +12,12 @@ public class ReminderFormDialog extends JDialog {
     private JTextField descField;
     private JLabel charCounter;
     private Reminder reminder;
+    private ReminderManager reminderManager;
 
-    public ReminderFormDialog(Frame owner, Reminder reminder) {
+    public ReminderFormDialog(Frame owner, Reminder reminder, ReminderManager reminderManager) {
         super(owner, reminder == null ? "Tambah Kegiatan" : "Edit Kegiatan", true);
         this.reminder = reminder;
+        this.reminderManager = reminderManager;
 
         setSize(400, 300);
         setLocationRelativeTo(owner);
@@ -108,6 +110,18 @@ public class ReminderFormDialog extends JDialog {
             return false;
         }
 
+        // Periksa duplikat jadwal berdasarkan nama, tanggal, dan waktu
+        for (Reminder existing : reminderManager.getDaftarReminder()) {
+            if (existing != reminder &&
+                existing.getNama().equalsIgnoreCase(title) &&
+                existing.getTanggal().equals(date) &&
+                existing.getWaktu().equals(time)) {
+
+                JOptionPane.showMessageDialog(this, "Jadwal dengan judul, tanggal, dan waktu yang sama sudah ada.", "Duplikat Jadwal", JOptionPane.WARNING_MESSAGE);
+                return false;
+            }
+        }
+
         if (reminder == null) {
             reminder = new Reminder(title, time, desc, date);
         } else {
@@ -130,7 +144,6 @@ public class ReminderFormDialog extends JDialog {
             return false;
         }
     }
-    
 
     private boolean isValidDate(String dateStr) {
         SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");

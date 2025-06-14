@@ -42,8 +42,9 @@ public class ReminderGUI extends JFrame {
     }
 
     private void tambahKegiatan(ActionEvent e) {
-        ReminderFormDialog dialog = new ReminderFormDialog(this, null);
+        ReminderFormDialog dialog = new ReminderFormDialog(this, null, reminderManager);
         dialog.setVisible(true);
+
         Reminder newReminder = dialog.getReminder();
         if (newReminder != null) {
             reminderManager.tambahReminder(newReminder);
@@ -52,8 +53,9 @@ public class ReminderGUI extends JFrame {
     }
 
     private void editReminder(Reminder reminder) {
-        ReminderFormDialog dialog = new ReminderFormDialog(this, reminder);
+        ReminderFormDialog dialog = new ReminderFormDialog(this, reminder, reminderManager);
         dialog.setVisible(true);
+
         Reminder updatedReminder = dialog.getReminder();
         if (updatedReminder != null) {
             reminderManager.hapusReminder(reminder);
@@ -87,14 +89,12 @@ public class ReminderGUI extends JFrame {
             title.setFont(new Font("Arial", Font.BOLD, 14));
             title.setAlignmentX(Component.LEFT_ALIGNMENT);
 
-           
-
             JLabel date = new JLabel(r.getTanggal() + " | " + r.getWaktu());
-        date.setFont(new Font("Segoe UI", Font.ITALIC, 12));
-        date.setForeground(new Color(0, 120, 215));
-        date.setBorder(BorderFactory.createEmptyBorder(4, 0, 0, 0));
+            date.setFont(new Font("Segoe UI", Font.ITALIC, 12));
+            date.setForeground(new Color(0, 120, 215));
+            date.setBorder(BorderFactory.createEmptyBorder(4, 0, 0, 0));
 
-            JTextArea desc = new JTextArea("\u2022 "+ r.getDeskripsi() );
+            JTextArea desc = new JTextArea("\u2022 " + r.getDeskripsi());
             desc.setWrapStyleWord(true);
             desc.setLineWrap(true);
             desc.setEditable(false);
@@ -111,14 +111,11 @@ public class ReminderGUI extends JFrame {
             textPanel.add(date);
             textPanel.add(desc);
 
-        
-
-            // Ikon tombol
             ImageIcon editIcon = new ImageIcon(
-                new ImageIcon("assets/edit.png").getImage().getScaledInstance(16, 16, Image.SCALE_SMOOTH)
+                    new ImageIcon("assets/edit.png").getImage().getScaledInstance(16, 16, Image.SCALE_SMOOTH)
             );
             ImageIcon deleteIcon = new ImageIcon(
-                new ImageIcon("assets/delete.png").getImage().getScaledInstance(16, 16, Image.SCALE_SMOOTH)
+                    new ImageIcon("assets/delete.png").getImage().getScaledInstance(16, 16, Image.SCALE_SMOOTH)
             );
 
             JButton editButton = new JButton(editIcon);
@@ -145,7 +142,6 @@ public class ReminderGUI extends JFrame {
 
             JPanel rightPanel = new JPanel(new BorderLayout());
             rightPanel.setBackground(panel.getBackground());
-       
             rightPanel.add(buttonPanel, BorderLayout.SOUTH);
 
             panel.add(textPanel, BorderLayout.CENTER);

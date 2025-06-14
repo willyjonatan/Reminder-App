@@ -16,8 +16,16 @@ public class ReminderManager {
         notificationTrackers = new ArrayList<>();
     }
 
-    public void tambahReminder(Reminder reminder) {
+    // Diperbarui: tambahReminder() cek duplikat
+    public boolean tambahReminder(Reminder reminder) {
+        for (Reminder r : daftarReminder) {
+            if (r.getTanggal().equals(reminder.getTanggal()) &&
+                r.getWaktu().equals(reminder.getWaktu())) {
+                return false; // duplikat
+            }
+        }
         daftarReminder.add(reminder);
+        return true;
     }
 
     public void hapusReminder(Reminder reminder) {
@@ -36,8 +44,6 @@ public class ReminderManager {
         return daftarReminder;
     }
 
-    // Method untuk cek reminder dan tampilkan notifikasi sesuai ketentuan:
-    // Notifikasi muncul saat waktu pas, ulang 2 kali dalam 3 menit ke depan (misal: tiap 90 detik)
     public void checkReminders() {
         Date now = new Date();
         SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm");
@@ -52,19 +58,15 @@ public class ReminderManager {
 
                 long diffMillis = now.getTime() - reminderDateTime.getTime();
 
-                // Cek jika waktunya sudah lewat atau pas dan dalam window 3 menit (180.000 ms)
                 if (diffMillis >= 0 && diffMillis <= 180_000) {
-                    // Cari tracker jika sudah ada
                     ReminderNotificationTracker tracker = getTrackerForReminder(reminder);
 
                     if (tracker == null) {
-                        // Belum pernah notif, buat tracker baru dan tampilkan notif
                         tracker = new ReminderNotificationTracker(reminder);
                         notificationTrackers.add(tracker);
                         showNotification(reminder);
                         tracker.incrementSent();
                     } else {
-                        // Tracker ada, cek apakah sudah kirim <2 kali dan delay 90 detik sejak terakhir notif
                         long millisSinceLastSent = now.getTime() - tracker.getLastSent().getTime();
                         if (tracker.getSentCount() < 3 && millisSinceLastSent >= 90_000) {
                             showNotification(reminder);
@@ -72,7 +74,6 @@ public class ReminderManager {
                         }
                     }
                 } else if(diffMillis > 180_000) {
-                    // Jika sudah melewati 3 menit window, hapus tracker untuk pengingat ini
                     removeTrackerForReminder(reminder);
                 }
             } catch (ParseException e) {
@@ -95,7 +96,6 @@ public class ReminderManager {
     }
 
     private void showNotification(Reminder reminder) {
-        // Tampilkan JOptionPane notifikasi (ini dipanggil di EDT dari thread check)
         SwingUtilities.invokeLater(() -> {
             JOptionPane.showMessageDialog(null,
                     "Pengingat : " + reminder.getNama() + "\n" +
@@ -106,7 +106,6 @@ public class ReminderManager {
         });
     }
 
-    // Class helper untuk tracking notifikasi per reminder
     private static class ReminderNotificationTracker {
         private final Reminder reminder;
         private int sentCount;
@@ -138,4 +137,3 @@ public class ReminderManager {
         }
     }
 }
-
