@@ -1,6 +1,5 @@
 package Pengingat;
 
-
 interface Displayable {
     String display();
 }

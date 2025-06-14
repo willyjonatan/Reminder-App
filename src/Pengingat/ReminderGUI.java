@@ -1,11 +1,8 @@
-// File: ReminderGUI.java
 package Pengingat;
 
 import javax.swing.*;
 import java.awt.*;
 import java.awt.event.ActionEvent;
-import java.text.ParseException;
-import java.text.SimpleDateFormat;
 import java.util.List;
 
 public class ReminderGUI extends JFrame {
@@ -45,215 +42,25 @@ public class ReminderGUI extends JFrame {
     }
 
     private void tambahKegiatan(ActionEvent e) {
-    String title = "";
-    String time = "";
-    String date = "";
-    String desc = "";
-
-    boolean inputValid = false;
-
-    while (!inputValid) {
-        JTextField titleField = new JTextField(title);
-        JTextField timeField = new JTextField(time);
-        JTextField dateField = new JTextField(date);
-        JTextField descField = new JTextField(desc);
-
-        JLabel charCounter = new JLabel(desc.length() + "/120");
-        charCounter.setForeground(Color.GRAY);
-        charCounter.setFont(new Font("Arial", Font.ITALIC, 10));
-
-        // Real-time counter untuk deskripsi
-        descField.getDocument().addDocumentListener(new javax.swing.event.DocumentListener() {
-            public void insertUpdate(javax.swing.event.DocumentEvent e) { updateCount(); }
-            public void removeUpdate(javax.swing.event.DocumentEvent e) { updateCount(); }
-            public void changedUpdate(javax.swing.event.DocumentEvent e) { updateCount(); }
-
-            private void updateCount() {
-                int len = descField.getText().length();
-                charCounter.setText(len + "/120");
-                charCounter.setForeground(len > 120 ? Color.RED : Color.GRAY);
-            }
-        });
-
-        JPanel formPanel = new JPanel();
-        formPanel.setLayout(new BoxLayout(formPanel, BoxLayout.Y_AXIS));
-        formPanel.setBackground(new Color(240, 240, 255));
-
-        formPanel.add(new JLabel("Judul:"));
-        formPanel.add(titleField);
-        formPanel.add(Box.createVerticalStrut(5));
-
-        formPanel.add(new JLabel("Jam (HH:MM):"));
-        formPanel.add(timeField);
-        formPanel.add(Box.createVerticalStrut(5));
-
-        formPanel.add(new JLabel("Tanggal (YYYY-MM-DD):"));
-        formPanel.add(dateField);
-        formPanel.add(Box.createVerticalStrut(5));
-
-        formPanel.add(new JLabel("Deskripsi:"));
-        formPanel.add(descField);
-        formPanel.add(charCounter);
-
-        int result = JOptionPane.showConfirmDialog(this, formPanel, "Tambah Kegiatan",
-                JOptionPane.OK_CANCEL_OPTION, JOptionPane.PLAIN_MESSAGE);
-
-        if (result != JOptionPane.OK_OPTION) return;
-
-        // Ambil input terbaru
-        title = titleField.getText().trim();
-        time = timeField.getText().trim();
-        date = dateField.getText().trim();
-        desc = descField.getText().trim();
-
-        // Validasi
-        if (title.isEmpty() || time.isEmpty() || date.isEmpty()) {
-            JOptionPane.showMessageDialog(this,
-                    "Judul, jam, dan tanggal tidak boleh kosong.",
-                    "Error", JOptionPane.ERROR_MESSAGE);
-            continue;
+        ReminderFormDialog dialog = new ReminderFormDialog(this, null);
+        dialog.setVisible(true);
+        Reminder newReminder = dialog.getReminder();
+        if (newReminder != null) {
+            reminderManager.tambahReminder(newReminder);
+            tampilkanReminders();
         }
-
-        if (!isValidTime(time)) {
-            JOptionPane.showMessageDialog(this,
-                    "Format waktu tidak valid. Gunakan format HH:mm (contoh: 14:30).",
-                    "Error", JOptionPane.ERROR_MESSAGE);
-            continue;
-        }
-
-        if (!isValidDate(date)) {
-            JOptionPane.showMessageDialog(this,
-                    "Format tanggal tidak valid. Gunakan format yyyy-MM-dd (contoh: 2025-06-13).",
-                    "Error", JOptionPane.ERROR_MESSAGE);
-            continue;
-        }
-
-        if (desc.length() > 120) {
-            JOptionPane.showMessageDialog(this,
-                    "Deskripsi tidak boleh lebih dari 120 karakter.",
-                    "Error", JOptionPane.ERROR_MESSAGE);
-            continue;
-        }
-
-        // Simpan reminder
-        reminderManager.tambahReminder(new Reminder(title, time, desc, date));
-        tampilkanReminders();
-        inputValid = true;
     }
-}
-
-
 
     private void editReminder(Reminder reminder) {
-    String title = reminder.getNama();
-    String time = reminder.getWaktu();
-    String date = reminder.getTanggal();
-    String desc = reminder.getDeskripsi();
-
-    boolean inputValid = false;
-
-    while (!inputValid) {
-        JTextField titleField = new JTextField(title);
-        JTextField timeField = new JTextField(time);
-        JTextField dateField = new JTextField(date);
-        JTextField descField = new JTextField(desc);
-
-        JLabel charCounter = new JLabel(desc.length() + "/120");
-        charCounter.setForeground(Color.GRAY);
-        charCounter.setFont(new Font("Arial", Font.ITALIC, 10));
-
-        // Listener real-time untuk hitung karakter
-        descField.getDocument().addDocumentListener(new javax.swing.event.DocumentListener() {
-            public void insertUpdate(javax.swing.event.DocumentEvent e) {
-                updateCount();
-            }
-            public void removeUpdate(javax.swing.event.DocumentEvent e) {
-                updateCount();
-            }
-            public void changedUpdate(javax.swing.event.DocumentEvent e) {
-                updateCount();
-            }
-            private void updateCount() {
-                int len = descField.getText().length();
-                charCounter.setText(len + "/120");
-                if (len > 120) {
-                    charCounter.setForeground(Color.RED);
-                } else {
-                    charCounter.setForeground(Color.GRAY);
-                }
-            }
-        });
-
-        JPanel formPanel = new JPanel();
-        formPanel.setLayout(new BoxLayout(formPanel, BoxLayout.Y_AXIS));
-        formPanel.setBackground(new Color(240, 240, 255));
-
-        formPanel.add(new JLabel("Judul:"));
-        formPanel.add(titleField);
-        formPanel.add(Box.createVerticalStrut(5));
-
-        formPanel.add(new JLabel("Jam (HH:MM):"));
-        formPanel.add(timeField);
-        formPanel.add(Box.createVerticalStrut(5));
-
-        formPanel.add(new JLabel("Tanggal (YYYY-MM-DD):"));
-        formPanel.add(dateField);
-        formPanel.add(Box.createVerticalStrut(5));
-
-        formPanel.add(new JLabel("Deskripsi:"));
-        formPanel.add(descField);
-        formPanel.add(charCounter); // Tambahkan label karakter counter
-
-        int result = JOptionPane.showConfirmDialog(this, formPanel, "Edit Kegiatan",
-                JOptionPane.OK_CANCEL_OPTION, JOptionPane.PLAIN_MESSAGE);
-
-        if (result != JOptionPane.OK_OPTION) return;
-
-        // Simpan nilai baru
-        title = titleField.getText().trim();
-        time = timeField.getText().trim();
-        date = dateField.getText().trim();
-        desc = descField.getText().trim();
-
-        // Validasi
-        if (title.isEmpty() || time.isEmpty() || date.isEmpty()) {
-            JOptionPane.showMessageDialog(this,
-                    "Judul, jam, dan tanggal tidak boleh kosong.",
-                    "Error", JOptionPane.ERROR_MESSAGE);
-            continue;
+        ReminderFormDialog dialog = new ReminderFormDialog(this, reminder);
+        dialog.setVisible(true);
+        Reminder updatedReminder = dialog.getReminder();
+        if (updatedReminder != null) {
+            reminderManager.hapusReminder(reminder);
+            reminderManager.tambahReminder(updatedReminder);
+            tampilkanReminders();
         }
-
-        if (!isValidTime(time)) {
-            JOptionPane.showMessageDialog(this,
-                    "Format waktu tidak valid. Gunakan format HH:mm.",
-                    "Error", JOptionPane.ERROR_MESSAGE);
-            continue;
-        }
-
-        if (!isValidDate(date)) {
-            JOptionPane.showMessageDialog(this,
-                    "Format tanggal tidak valid. Gunakan format yyyy-MM-dd.",
-                    "Error", JOptionPane.ERROR_MESSAGE);
-            continue;
-        }
-
-        if (desc.length() > 120) {
-            JOptionPane.showMessageDialog(this,
-                    "Deskripsi tidak boleh lebih dari 120 karakter.",
-                    "Error", JOptionPane.ERROR_MESSAGE);
-            continue;
-        }
-
-        reminder.setNama(title);
-        reminder.setWaktu(time);
-        reminder.setTanggal(date);
-        reminder.setDeskripsi(desc);
-        tampilkanReminders();
-        inputValid = true;
     }
-}
-
-
 
     private void tampilkanReminders() {
         mainPanel.removeAll();
@@ -350,27 +157,5 @@ public class ReminderGUI extends JFrame {
 
         mainPanel.revalidate();
         mainPanel.repaint();
-    }
-
-    private boolean isValidTime(String timeStr) {
-        SimpleDateFormat sdf = new SimpleDateFormat("HH:mm");
-        sdf.setLenient(false);
-        try {
-            sdf.parse(timeStr);
-            return true;
-        } catch (ParseException e) {
-            return false;
-        }
-    }
-
-    private boolean isValidDate(String dateStr) {
-        SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
-        sdf.setLenient(false);
-        try {
-            sdf.parse(dateStr);
-            return true;
-        } catch (ParseException e) {
-            return false;
-        }
     }
 }

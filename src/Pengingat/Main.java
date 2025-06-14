@@ -8,7 +8,20 @@ public class Main {
 
         // Langsung jalankan GUI
         SwingUtilities.invokeLater(() -> {
-            new ReminderGUI(reminderManager).setVisible(true);
+            ReminderGUI reminderGUI = new ReminderGUI(reminderManager);
+            reminderGUI.setVisible(true);
+
+            // Thread untuk memeriksa pengingat setiap detik
+            new Thread(() -> {
+                while (true) {
+                    reminderManager.checkReminders();
+                    try {
+                        Thread.sleep(1000); // Tunggu 1 detik
+                    } catch (InterruptedException e) {
+                        e.printStackTrace();
+                    }
+                }
+            }).start();
         });
     }
 }
