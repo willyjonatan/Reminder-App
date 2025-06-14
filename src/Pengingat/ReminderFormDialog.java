@@ -62,28 +62,53 @@ public class ReminderFormDialog extends JDialog {
         formPanel.setLayout(new BoxLayout(formPanel, BoxLayout.Y_AXIS));
         formPanel.setBackground(new Color(240, 240, 255));
 
-        formPanel.add(new JLabel("Jenis Kegiatan:"));
+        // Jenis Kegiatan
+        JLabel jenisLabel = new JLabel("Jenis Kegiatan:");
+        jenisLabel.setAlignmentX(Component.LEFT_ALIGNMENT);
+        typeComboBox.setAlignmentX(Component.LEFT_ALIGNMENT);
+        formPanel.add(jenisLabel);
         formPanel.add(typeComboBox);
         formPanel.add(Box.createVerticalStrut(5));
 
-        formPanel.add(new JLabel("Judul:"));
+        // Judul
+        JLabel judulLabel = new JLabel("Judul:");
+        judulLabel.setAlignmentX(Component.LEFT_ALIGNMENT);
+        titleField.setAlignmentX(Component.LEFT_ALIGNMENT);
+        formPanel.add(judulLabel);
         formPanel.add(titleField);
         formPanel.add(Box.createVerticalStrut(5));
 
-        formPanel.add(new JLabel("Jam (HH:MM):"));
+        // Jam
+        JLabel jamLabel = new JLabel("Jam (HH:MM):");
+        jamLabel.setAlignmentX(Component.LEFT_ALIGNMENT);
+        timeField.setAlignmentX(Component.LEFT_ALIGNMENT);
+        formPanel.add(jamLabel);
         formPanel.add(timeField);
         formPanel.add(Box.createVerticalStrut(5));
 
-        formPanel.add(new JLabel("Tanggal (YYYY-MM-DD):"));
+        // Tanggal
+        JLabel tanggalLabel = new JLabel("Tanggal (YYYY-MM-DD):");
+        tanggalLabel.setAlignmentX(Component.LEFT_ALIGNMENT);
+        dateField.setAlignmentX(Component.LEFT_ALIGNMENT);
+        formPanel.add(tanggalLabel);
         formPanel.add(dateField);
         formPanel.add(Box.createVerticalStrut(5));
 
-        formPanel.add(new JLabel("Deskripsi:"));
+        // Deskripsi
+        JLabel deskripsiLabel = new JLabel("Deskripsi:");
+        deskripsiLabel.setAlignmentX(Component.LEFT_ALIGNMENT);
+        descField.setAlignmentX(Component.LEFT_ALIGNMENT);
+        charCounter.setAlignmentX(Component.LEFT_ALIGNMENT);
+        formPanel.add(deskripsiLabel);
         formPanel.add(descField);
         formPanel.add(charCounter);
         formPanel.add(Box.createVerticalStrut(5));
 
-        formPanel.add(new JLabel("Platform / Prioritas:"));
+        // Platform / Prioritas
+        JLabel platformLabel = new JLabel("Platform / Prioritas:");
+        platformLabel.setAlignmentX(Component.LEFT_ALIGNMENT);
+        extraField.setAlignmentX(Component.LEFT_ALIGNMENT);
+        formPanel.add(platformLabel);
         formPanel.add(extraField);
 
         add(formPanel, BorderLayout.CENTER);
