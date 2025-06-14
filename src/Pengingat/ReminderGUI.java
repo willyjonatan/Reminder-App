@@ -87,12 +87,14 @@ public class ReminderGUI extends JFrame {
             title.setFont(new Font("Arial", Font.BOLD, 14));
             title.setAlignmentX(Component.LEFT_ALIGNMENT);
 
-            JLabel date = new JLabel(r.getTanggal());
-            date.setForeground(new Color(80, 80, 120));
-            date.setFont(new Font("Arial", Font.PLAIN, 11));
-            date.setAlignmentX(Component.LEFT_ALIGNMENT);
+           
 
-            JTextArea desc = new JTextArea(r.getDeskripsi());
+            JLabel date = new JLabel(r.getTanggal() + " | " + r.getWaktu());
+        date.setFont(new Font("Segoe UI", Font.ITALIC, 12));
+        date.setForeground(new Color(0, 120, 215));
+        date.setBorder(BorderFactory.createEmptyBorder(4, 0, 0, 0));
+
+            JTextArea desc = new JTextArea("\u2022 "+ r.getDeskripsi() );
             desc.setWrapStyleWord(true);
             desc.setLineWrap(true);
             desc.setEditable(false);
@@ -109,9 +111,7 @@ public class ReminderGUI extends JFrame {
             textPanel.add(date);
             textPanel.add(desc);
 
-            JLabel time = new JLabel(r.getWaktu());
-            time.setForeground(new Color(60, 120, 160));
-            time.setFont(new Font("Arial", Font.BOLD, 13));
+        
 
             // Ikon tombol
             ImageIcon editIcon = new ImageIcon(
@@ -145,7 +145,7 @@ public class ReminderGUI extends JFrame {
 
             JPanel rightPanel = new JPanel(new BorderLayout());
             rightPanel.setBackground(panel.getBackground());
-            rightPanel.add(time, BorderLayout.NORTH);
+       
             rightPanel.add(buttonPanel, BorderLayout.SOUTH);
 
             panel.add(textPanel, BorderLayout.CENTER);
