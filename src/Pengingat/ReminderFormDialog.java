@@ -112,15 +112,14 @@ public class ReminderFormDialog extends JDialog {
 
         // Periksa duplikat jadwal berdasarkan nama, tanggal, dan waktu
         for (Reminder existing : reminderManager.getDaftarReminder()) {
-            if (existing != reminder &&
-                existing.getNama().equalsIgnoreCase(title) &&
-                existing.getTanggal().equals(date) &&
-                existing.getWaktu().equals(time)) {
+    // Jika sedang edit, abaikan diri sendiri
+    if (reminder != null && existing == reminder) continue;
 
-                JOptionPane.showMessageDialog(this, "Jadwal dengan judul, tanggal, dan waktu yang sama sudah ada.", "Duplikat Jadwal", JOptionPane.WARNING_MESSAGE);
-                return false;
-            }
-        }
+    if (existing.getTanggal().equals(date) && existing.getWaktu().equals(time)) {
+        JOptionPane.showMessageDialog(this, "Sudah ada kegiatan lain pada waktu yang sama.", "Jadwal Bentrok", JOptionPane.WARNING_MESSAGE);
+        return false;
+    }
+}
 
         if (reminder == null) {
             reminder = new Reminder(title, time, desc, date);
