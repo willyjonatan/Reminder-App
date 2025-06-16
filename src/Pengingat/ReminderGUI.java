@@ -10,6 +10,13 @@ public class ReminderGUI extends JFrame {
     private ReminderManager reminderManager;
     private JPanel mainPanel;
 
+    // Tambahan: Enum untuk filter
+    private enum FilterType {
+        SEMUA, SELESAI, BELUM_SELESAI
+    }
+
+    private FilterType currentFilter = FilterType.SEMUA;
+
     public ReminderGUI(ReminderManager reminderManager) {
         this.reminderManager = reminderManager;
 
@@ -19,16 +26,66 @@ public class ReminderGUI extends JFrame {
         setLocationRelativeTo(null);
         getContentPane().setBackground(new Color(240, 240, 255));
 
+        // Panel atas (untuk tombol filter)
+        JPanel topPanel = new JPanel(new BorderLayout());
+        topPanel.setBackground(new Color(240, 240, 255));
+        topPanel.setBorder(BorderFactory.createEmptyBorder(5, 10, 5, 10));
+
+        // Tombol Filter dengan icon
+        ImageIcon filterIcon = new ImageIcon(
+            new ImageIcon("assets/filter.png").getImage().getScaledInstance(16, 16, Image.SCALE_SMOOTH)
+        );
+        JButton btnFilter = new JButton("Filter", filterIcon);
+        btnFilter.setFocusPainted(false);
+        btnFilter.setFont(new Font("Arial", Font.PLAIN, 12));
+        btnFilter.setBackground(new Color(200, 220, 240));
+        btnFilter.setForeground(Color.DARK_GRAY);
+
+        // Dropdown Filter
+        JPopupMenu filterMenu = new JPopupMenu();
+
+        JMenuItem semuaItem = new JMenuItem("Tampilkan Semua");
+        semuaItem.addActionListener(e -> {
+            currentFilter = FilterType.SEMUA;
+            tampilkanReminders();
+        });
+
+        JMenuItem selesaiItem = new JMenuItem("Hanya yang Selesai");
+        selesaiItem.addActionListener(e -> {
+            currentFilter = FilterType.SELESAI;
+            tampilkanReminders();
+        });
+
+        JMenuItem belumItem = new JMenuItem("Hanya yang Belum Selesai");
+        belumItem.addActionListener(e -> {
+            currentFilter = FilterType.BELUM_SELESAI;
+            tampilkanReminders();
+        });
+
+        filterMenu.add(semuaItem);
+        filterMenu.add(selesaiItem);
+        filterMenu.add(belumItem);
+
+        btnFilter.addActionListener(e -> {
+            filterMenu.show(btnFilter, 0, btnFilter.getHeight());
+        });
+
+        topPanel.add(btnFilter, BorderLayout.EAST);
+        add(topPanel, BorderLayout.NORTH);
+
+        // Panel utama daftar kegiatan
         mainPanel = new JPanel();
         mainPanel.setLayout(new BoxLayout(mainPanel, BoxLayout.Y_AXIS));
         mainPanel.setBackground(new Color(240, 240, 255));
         mainPanel.setBorder(BorderFactory.createEmptyBorder(10, 10, 10, 10));
+        
 
         JScrollPane scrollPane = new JScrollPane(mainPanel);
         scrollPane.setBorder(null);
         scrollPane.getVerticalScrollBar().setUnitIncrement(16);
         add(scrollPane, BorderLayout.CENTER);
 
+        // Tombol tambah
         JButton addButton = new JButton("+ Tambah Kegiatan");
         addButton.setFocusPainted(false);
         addButton.setFont(new Font("Arial", Font.BOLD, 14));
@@ -40,10 +97,9 @@ public class ReminderGUI extends JFrame {
 
         tampilkanReminders();
 
-        // Timer otomatis untuk refresh setiap 10 detik
         Timer autoRefresh = new Timer(1_000, e -> {
-            reminderManager.checkReminders(); // Tampilkan notifikasi jika waktunya tiba
-            tampilkanReminders();            // Perbarui tampilan (warna & label)
+            reminderManager.checkReminders();
+            tampilkanReminders();
         });
         autoRefresh.start();
     }
@@ -83,6 +139,18 @@ public class ReminderGUI extends JFrame {
 
         List<Reminder> reminders = reminderManager.getDaftarReminder();
 
+        // 🔎 Terapkan filter berdasarkan currentFilter
+        reminders = reminders.stream().filter(r -> {
+            switch (currentFilter) {
+                case SELESAI:
+                    return r.isSudahDilewati();
+                case BELUM_SELESAI:
+                    return !r.isSudahDilewati();
+                default:
+                    return true;
+            }
+        }).toList();
+
         for (Reminder r : reminders) {
             JPanel panel = new JPanel(new BorderLayout());
             panel.setMaximumSize(new Dimension(Integer.MAX_VALUE, 120));
@@ -91,11 +159,7 @@ public class ReminderGUI extends JFrame {
                 BorderFactory.createEmptyBorder(8, 12, 8, 12)
             ));
 
-            if (r.isSudahDilewati()) {
-                panel.setBackground(new Color(220, 255, 220)); // hijau muda
-            } else {
-                panel.setBackground(new Color(224, 240, 255));
-            }
+            panel.setBackground(r.isSudahDilewati() ? new Color(220, 255, 220) : new Color(224, 240, 255));
 
             JLabel title = new JLabel(r.getNama());
             title.setForeground(new Color(40, 75, 99));
@@ -105,6 +169,7 @@ public class ReminderGUI extends JFrame {
             date.setFont(new Font("Segoe UI", Font.ITALIC, 12));
             date.setForeground(new Color(0, 120, 215));
             date.setBorder(BorderFactory.createEmptyBorder(4, 0, 0, 0));
+            
 
             JTextArea desc = new JTextArea("• " + r.getDeskripsi());
             desc.setWrapStyleWord(true);
@@ -114,6 +179,7 @@ public class ReminderGUI extends JFrame {
             desc.setOpaque(false);
             desc.setForeground(new Color(100, 100, 100));
             desc.setFont(new Font("Arial", Font.ITALIC, 11));
+            desc.setAlignmentX(Component.LEFT_ALIGNMENT);
 
             String extraInfo = "";
             if (r instanceof MeetingReminder) {
@@ -126,28 +192,18 @@ public class ReminderGUI extends JFrame {
             extraLabel.setFont(new Font("Arial", Font.PLAIN, 11));
             extraLabel.setForeground(new Color(80, 80, 120));
             extraLabel.setBorder(BorderFactory.createEmptyBorder(2, 0, 0, 0));
+            extraLabel.setAlignmentX(Component.LEFT_ALIGNMENT);
 
-            // ...
             JPanel textPanel = new JPanel();
             textPanel.setLayout(new BoxLayout(textPanel, BoxLayout.Y_AXIS));
             textPanel.setBackground(panel.getBackground());
-            textPanel.setAlignmentX(Component.LEFT_ALIGNMENT); // pastikan seluruh panel kiri
-
-            // SET LEFT ALIGN UNTUK SEMUA KOMPONEN DI TEXTPANEL
-            title.setAlignmentX(Component.LEFT_ALIGNMENT);
-            date.setAlignmentX(Component.LEFT_ALIGNMENT);
-            desc.setAlignmentX(Component.LEFT_ALIGNMENT);
-            extraLabel.setAlignmentX(Component.LEFT_ALIGNMENT);
-
             textPanel.add(title);
             textPanel.add(date);
             textPanel.add(desc);
-
             if (!extraInfo.isEmpty()) {
                 textPanel.add(extraLabel);
             }
 
-            // Tambahkan label status jika sudah dilewati
             if (r.isSudahDilewati()) {
                 ImageIcon checkIcon = new ImageIcon(
                     new ImageIcon("assets/check.png").getImage().getScaledInstance(16, 16, Image.SCALE_SMOOTH)
@@ -156,10 +212,9 @@ public class ReminderGUI extends JFrame {
                 checkLabel.setFont(new Font("Arial", Font.BOLD, 12));
                 checkLabel.setForeground(new Color(34, 139, 34));
                 checkLabel.setBorder(BorderFactory.createEmptyBorder(4, 0, 0, 0));
-                checkLabel.setAlignmentX(Component.LEFT_ALIGNMENT); // ini penting agar label status align kiri
+                checkLabel.setAlignmentX(Component.LEFT_ALIGNMENT);
                 textPanel.add(checkLabel);
             }
-
 
             ImageIcon editIcon = new ImageIcon(
                 new ImageIcon("assets/edit.png").getImage().getScaledInstance(16, 16, Image.SCALE_SMOOTH)
