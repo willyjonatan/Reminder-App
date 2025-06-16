@@ -21,7 +21,7 @@ public class ReminderManager {
         for (Reminder r : daftarReminder) {
             if (r.getTanggal().equals(reminder.getTanggal()) &&
                 r.getWaktu().equals(reminder.getWaktu())) {
-                return false; // duplikat
+                return false;
             }
         }
         daftarReminder.add(reminder);
@@ -30,7 +30,7 @@ public class ReminderManager {
 
     public void hapusReminder(Reminder reminder) {
         daftarReminder.remove(reminder);
-        // Juga hapus tracker terkait jika ada
+                
         Iterator<ReminderNotificationTracker> iterator = notificationTrackers.iterator();
         while(iterator.hasNext()) {
             ReminderNotificationTracker tracker = iterator.next();

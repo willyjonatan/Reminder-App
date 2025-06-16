@@ -7,6 +7,7 @@ public class Reminder implements Displayable {
     private String deskripsi;
     private String tanggal = "";
 
+    //parameter consturctor
     public Reminder(String nama, String waktu, String deskripsi) {
         this.nama = nama;
         this.waktu = waktu;
