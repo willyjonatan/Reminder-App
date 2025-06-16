@@ -1,23 +1,28 @@
 // File: Reminder.java
 package Pengingat;
 
-// Kelas Reminder mengimplementasikan interface Displayable (INTERFACE)
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
+import java.util.Date;
+
+// Kelas Reminder mengimplementasikan interface Displayable (POLYMORPHISM via INTERFACE)
 public class Reminder implements Displayable {
 
-    // Field (variabel instance) bersifat private → akses dibatasi (ENCAPSULATION)
-    private String nama;       // Judul kegiatan
-    private String waktu;      // Waktu kegiatan
-    private String deskripsi;  // Deskripsi kegiatan
-    private String tanggal = ""; // Tanggal kegiatan (default kosong)
+    // [Private Fields] → encapsulated (ENCAPSULATION)
+    private String nama;          // Judul kegiatan
+    private String waktu;         // Waktu kegiatan (HH:mm)
+    private String deskripsi;     // Deskripsi kegiatan
+    private String tanggal = "";  // Tanggal kegiatan (yyyy-MM-dd)
+    private boolean sudahDilewati = false; // Status apakah kegiatan telah terlewati
 
-    // Constructor pertama: tanpa parameter tanggal (CONSTRUCTOR)
+    // [Constructor] Tanpa tanggal (OVERLOADED)
     public Reminder(String nama, String waktu, String deskripsi) {
         this.nama = nama;
         this.waktu = waktu;
         this.deskripsi = deskripsi;
     }
 
-    // Constructor kedua: dengan parameter tanggal (CONSTRUCTOR - OVERLOADED)
+    // [Constructor] Dengan tanggal (OVERLOADED)
     public Reminder(String nama, String waktu, String deskripsi, String tanggal) {
         this.nama = nama;
         this.waktu = waktu;
@@ -25,50 +30,64 @@ public class Reminder implements Displayable {
         this.tanggal = tanggal;
     }
 
-    // Getter method untuk nama (ENCAPSULATION)
+    // [Behavior Method] Mengecek apakah waktu reminder sudah lewat (ABSTRACTION + LOGIC)
+    public boolean isSudahDilewati() {
+        try {
+            SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm");
+            Date reminderTime = sdf.parse(this.tanggal + " " + this.waktu);
+            Date now = new Date();
+
+            this.sudahDilewati = now.after(reminderTime); // simpan hasil untuk akses selanjutnya
+            return this.sudahDilewati;
+        } catch (ParseException e) {
+            return false;
+        }
+    }
+
+    // [Getter Method]
+    public boolean getStatusSelesai() {
+        return this.sudahDilewati;
+    }
+
+    // [Getter & Setter Methods] (ENCAPSULATION)
     public String getNama() {
         return nama;
     }
 
-    // Setter method untuk nama (ENCAPSULATION)
     public void setNama(String nama) {
         this.nama = nama;
     }
 
-    // Getter method untuk waktu (ENCAPSULATION)
     public String getWaktu() {
         return waktu;
     }
 
-    // Setter method untuk waktu (ENCAPSULATION)
     public void setWaktu(String waktu) {
         this.waktu = waktu;
     }
 
-    // Getter method untuk deskripsi (ENCAPSULATION)
     public String getDeskripsi() {
         return deskripsi;
     }
 
-    // Setter method untuk deskripsi (ENCAPSULATION)
     public void setDeskripsi(String deskripsi) {
         this.deskripsi = deskripsi;
     }
 
-    // Getter method untuk tanggal (ENCAPSULATION)
     public String getTanggal() {
         return tanggal;
     }
 
-    // Setter method untuk tanggal (ENCAPSULATION)
     public void setTanggal(String tanggal) {
         this.tanggal = tanggal;
     }
 
-    // Implementasi method dari interface Displayable (POLYMORPHISM melalui INTERFACE)
+    // [Polymorphism] Implementasi dari Interface Displayable (ABSTRACTION)
     @Override
     public String display() {
-        // Mengembalikan representasi teks dari objek Reminder (ABSTRACTION: menyembunyikan detail internal)
-        return "Judul: " + nama + "\nWaktu: " + waktu + "\nTanggal: " + tanggal + "\nDeskripsi: " + deskripsi;
+        return "Judul: " + nama +
+               "\nWaktu: " + waktu +
+               "\nTanggal: " + tanggal +
+               "\nDeskripsi: " + deskripsi;
     }
 }
