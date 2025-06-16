@@ -70,7 +70,7 @@ public class ReminderGUI extends JFrame {
             filterMenu.show(btnFilter, 0, btnFilter.getHeight());
         });
 
-        topPanel.add(btnFilter, BorderLayout.EAST);
+        topPanel.add(btnFilter, BorderLayout.WEST);
         add(topPanel, BorderLayout.NORTH);
 
         // Panel utama daftar kegiatan
