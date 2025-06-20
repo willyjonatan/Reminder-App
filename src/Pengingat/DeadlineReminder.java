@@ -28,7 +28,11 @@ public class DeadlineReminder extends Reminder {
     // Override method display() dari superclass Reminder (POLYMORPHISM)
     @Override
     public String display() {
-        // Memanggil implementasi method display() dari Reminder lalu menambahkan info prioritas
-        return super.display() + "\nPrioritas: " + prioritas;
+        // Tidak lagi memanggil super.display() karena Reminder.display() adalah abstract
+        return "Judul: " + getNama() +
+               "\nWaktu: " + getWaktu() +
+               "\nTanggal: " + getTanggal() +
+               "\nDeskripsi: " + getDeskripsi() +
+               "\nPrioritas: " + prioritas;
     }
 }

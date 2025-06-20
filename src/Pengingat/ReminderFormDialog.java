@@ -150,7 +150,16 @@ public class ReminderFormDialog extends JDialog {
                     reminder = new DeadlineReminder(title, time, desc, date, extra);
                     break;
                 default:
-                    reminder = new Reminder(title, time, desc, date);
+                    // Karena Reminder sudah abstract, kita buat anonymous subclass untuk Reminder Biasa
+                    reminder = new Reminder(title, time, desc, date) {
+                        @Override
+                        public String display() {
+                            return "Judul: " + getNama() +
+                                   "\nWaktu: " + getWaktu() +
+                                   "\nTanggal: " + getTanggal() +
+                                   "\nDeskripsi: " + getDeskripsi();
+                        }
+                    };
             }
         } else {
             reminder.setNama(title);
@@ -165,7 +174,6 @@ public class ReminderFormDialog extends JDialog {
             }
         }
 
-        
         return true;
     }
 
