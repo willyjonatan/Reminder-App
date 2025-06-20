@@ -164,6 +164,7 @@ public class ReminderGUI extends JFrame {
             JLabel title = new JLabel(r.getNama());
             title.setForeground(new Color(40, 75, 99));
             title.setFont(new Font("Arial", Font.BOLD, 14));
+            
 
             JLabel date = new JLabel(r.getTanggal() + " | " + r.getWaktu());
             date.setFont(new Font("Segoe UI", Font.ITALIC, 12));

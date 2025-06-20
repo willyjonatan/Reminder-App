@@ -27,10 +27,19 @@ public class ReminderFormDialog extends JDialog {
         setLayout(new BorderLayout());
 
         titleField = new JTextField(reminder != null ? reminder.getNama() : "");
+        titleField.setHorizontalAlignment(JTextField.LEFT);
+
         timeField = new JTextField(reminder != null ? reminder.getWaktu() : "");
+        timeField.setHorizontalAlignment(JTextField.LEFT);
+
         dateField = new JTextField(reminder != null ? reminder.getTanggal() : "");
+        dateField.setHorizontalAlignment(JTextField.LEFT);
+
         descField = new JTextField(reminder != null ? reminder.getDeskripsi() : "");
+        descField.setHorizontalAlignment(JTextField.LEFT);
+
         extraField = new JTextField();
+        extraField.setHorizontalAlignment(JTextField.LEFT);
 
         typeComboBox = new JComboBox<>(new String[]{"Reminder Biasa", "Meeting Reminder", "Deadline Reminder"});
 
@@ -58,35 +67,44 @@ public class ReminderFormDialog extends JDialog {
             }
         });
 
-        JPanel formPanel = new JPanel();
-        formPanel.setLayout(new BoxLayout(formPanel, BoxLayout.Y_AXIS));
-        formPanel.setBackground(new Color(240, 240, 255));
+       JPanel formPanel = new JPanel();
+formPanel.setLayout(new BoxLayout(formPanel, BoxLayout.Y_AXIS));
+formPanel.setBackground(new Color(240, 240, 255));
 
-        formPanel.add(new JLabel("Jenis Kegiatan:"));
-        formPanel.add(typeComboBox);
-        formPanel.add(Box.createVerticalStrut(5));
+// Komponen rata kiri
+formPanel.add(makeLeftLabel("Jenis Kegiatan:"));
+typeComboBox.setAlignmentX(Component.LEFT_ALIGNMENT);
+formPanel.add(typeComboBox);
+formPanel.add(Box.createVerticalStrut(5));
 
-        formPanel.add(new JLabel("Judul:"));
-        formPanel.add(titleField);
-        formPanel.add(Box.createVerticalStrut(5));
+formPanel.add(makeLeftLabel("Judul:"));
+titleField.setAlignmentX(Component.LEFT_ALIGNMENT);
+formPanel.add(titleField);
+formPanel.add(Box.createVerticalStrut(5));
 
-        formPanel.add(new JLabel("Waktu (HH:mm):"));
-        formPanel.add(timeField);
-        formPanel.add(Box.createVerticalStrut(5));
+formPanel.add(makeLeftLabel("Waktu (HH:mm):"));
+timeField.setAlignmentX(Component.LEFT_ALIGNMENT);
+formPanel.add(timeField);
+formPanel.add(Box.createVerticalStrut(5));
 
-        formPanel.add(new JLabel("Tanggal (yyyy-MM-dd):"));
-        formPanel.add(dateField);
-        formPanel.add(Box.createVerticalStrut(5));
+formPanel.add(makeLeftLabel("Tanggal (yyyy-MM-dd):"));
+dateField.setAlignmentX(Component.LEFT_ALIGNMENT);
+formPanel.add(dateField);
+formPanel.add(Box.createVerticalStrut(5));
 
-        formPanel.add(new JLabel("Deskripsi:"));
-        formPanel.add(descField);
-        formPanel.add(charCounter);
-        formPanel.add(Box.createVerticalStrut(5));
+formPanel.add(makeLeftLabel("Deskripsi:"));
+descField.setAlignmentX(Component.LEFT_ALIGNMENT);
+formPanel.add(descField);
+charCounter.setAlignmentX(Component.LEFT_ALIGNMENT);
+formPanel.add(charCounter);
+formPanel.add(Box.createVerticalStrut(5));
 
-        formPanel.add(new JLabel("Platform / Prioritas:"));
-        formPanel.add(extraField);
+formPanel.add(makeLeftLabel("Platform / Prioritas:"));
+extraField.setAlignmentX(Component.LEFT_ALIGNMENT);
+formPanel.add(extraField);
 
-        add(formPanel, BorderLayout.CENTER);
+add(formPanel, BorderLayout.CENTER);
+
 
         JPanel buttonPanel = new JPanel(new FlowLayout(FlowLayout.RIGHT));
         JButton okButton = new JButton("OK");
@@ -103,6 +121,13 @@ public class ReminderFormDialog extends JDialog {
         buttonPanel.add(okButton);
         buttonPanel.add(cancelButton);
         add(buttonPanel, BorderLayout.SOUTH);
+    }
+
+    private JLabel makeLeftLabel(String text) {
+        JLabel label = new JLabel(text);
+        label.setHorizontalAlignment(SwingConstants.LEFT);
+        label.setAlignmentX(Component.LEFT_ALIGNMENT);
+        return label;
     }
 
     private boolean validateInput() {
@@ -150,7 +175,6 @@ public class ReminderFormDialog extends JDialog {
                     reminder = new DeadlineReminder(title, time, desc, date, extra);
                     break;
                 default:
-                    // Karena Reminder sudah abstract, kita buat anonymous subclass untuk Reminder Biasa
                     reminder = new Reminder(title, time, desc, date) {
                         @Override
                         public String display() {
