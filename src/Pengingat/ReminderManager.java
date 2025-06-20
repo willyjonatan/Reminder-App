@@ -113,7 +113,8 @@ public class ReminderManager {
             JOptionPane.showMessageDialog(null,
                     "Pengingat : " + reminder.getNama() + "\n" +
                     "Deskripsi : " + reminder.getDeskripsi() + "\n" +
-                    "Waktu : " + reminder.getWaktu(),
+                    "Waktu : " + reminder.getWaktu() + "\n" +
+                    "Tanggal : " + reminder.getTanggal(),
                     "Notifikasi Pengingat",
                     JOptionPane.INFORMATION_MESSAGE);
         });
