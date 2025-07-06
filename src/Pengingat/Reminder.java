@@ -1,11 +1,9 @@
-// File: Reminder.java
 package Pengingat;
 
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 
-// Dijadikan abstract class
 public abstract class Reminder implements Displayable {
 
     private String nama;
@@ -75,7 +73,6 @@ public abstract class Reminder implements Displayable {
         this.tanggal = tanggal;
     }
 
-    // Diubah jadi abstract → wajib diimplementasikan oleh subclass
     @Override
     public abstract String display();
 }

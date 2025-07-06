@@ -10,7 +10,6 @@ public class ReminderGUI extends JFrame {
     private ReminderManager reminderManager;
     private JPanel mainPanel;
 
-    // Tambahan: Enum untuk filter
     private enum FilterType {
         SEMUA, SELESAI, BELUM_SELESAI
     }
@@ -26,12 +25,10 @@ public class ReminderGUI extends JFrame {
         setLocationRelativeTo(null);
         getContentPane().setBackground(new Color(240, 240, 255));
 
-        // Panel atas (untuk tombol filter)
         JPanel topPanel = new JPanel(new BorderLayout());
         topPanel.setBackground(new Color(240, 240, 255));
         topPanel.setBorder(BorderFactory.createEmptyBorder(5, 10, 5, 10));
 
-        // Tombol Filter dengan icon
         ImageIcon filterIcon = new ImageIcon(
             new ImageIcon("assets/filter.png").getImage().getScaledInstance(16, 16, Image.SCALE_SMOOTH)
         );
@@ -41,7 +38,6 @@ public class ReminderGUI extends JFrame {
         btnFilter.setBackground(new Color(200, 220, 240));
         btnFilter.setForeground(Color.DARK_GRAY);
 
-        // Dropdown Filter
         JPopupMenu filterMenu = new JPopupMenu();
 
         JMenuItem semuaItem = new JMenuItem("Tampilkan Semua");
@@ -73,7 +69,6 @@ public class ReminderGUI extends JFrame {
         topPanel.add(btnFilter, BorderLayout.WEST);
         add(topPanel, BorderLayout.NORTH);
 
-        // Panel utama daftar kegiatan
         mainPanel = new JPanel();
         mainPanel.setLayout(new BoxLayout(mainPanel, BoxLayout.Y_AXIS));
         mainPanel.setBackground(new Color(240, 240, 255));
@@ -85,7 +80,6 @@ public class ReminderGUI extends JFrame {
         scrollPane.getVerticalScrollBar().setUnitIncrement(16);
         add(scrollPane, BorderLayout.CENTER);
 
-        // Tombol tambah
         JButton addButton = new JButton("+ Tambah Kegiatan");
         addButton.setFocusPainted(false);
         addButton.setFont(new Font("Arial", Font.BOLD, 14));
@@ -139,7 +133,6 @@ public class ReminderGUI extends JFrame {
 
         List<Reminder> reminders = reminderManager.getDaftarReminder();
 
-        // 🔎 Terapkan filter berdasarkan currentFilter
         reminders = reminders.stream().filter(r -> {
             switch (currentFilter) {
                 case SELESAI:
@@ -260,3 +253,4 @@ public class ReminderGUI extends JFrame {
         mainPanel.repaint();
     }
 }
+

@@ -71,7 +71,6 @@ public class ReminderFormDialog extends JDialog {
 formPanel.setLayout(new BoxLayout(formPanel, BoxLayout.Y_AXIS));
 formPanel.setBackground(new Color(240, 240, 255));
 
-// Komponen rata kiri
 formPanel.add(makeLeftLabel("Jenis Kegiatan:"));
 typeComboBox.setAlignmentX(Component.LEFT_ALIGNMENT);
 formPanel.add(typeComboBox);

@@ -1,4 +1,3 @@
-// File: MeetingReminder.java
 package Pengingat;
 
 public class MeetingReminder extends Reminder {
